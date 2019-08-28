@@ -53,3 +53,10 @@ dkms.conf
 
 #exercism metadata
 .exercism
+
+#vim
+*.swo
+*.swp
+
+#vscode
+.vscode
