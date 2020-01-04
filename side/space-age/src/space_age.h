@@ -3,6 +3,8 @@
 
 #include "time.h"
 
+#define EARTH_AGE(t) (t/31557600)
+
 typedef enum planet_e {
     MERCURY,
     VENUS,
