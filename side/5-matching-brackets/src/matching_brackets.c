@@ -2,6 +2,9 @@
 
 SLIST_HEAD(stack_s, stackNode_s) head = SLIST_HEAD_INITIALIZER(head);
 
+char pop (struct stack_s *stack);
+void free_stack (struct stack_s *stack);
+
 char
 pop (struct stack_s *stack)
 {
@@ -37,26 +40,31 @@ is_paired (const char *input)
 
     for (; *input != '\0'; input++) {
         switch (*input) {
+            /* intentional fallthrough */
             case '(':
             case '{':
-            case '[':
+            case '[': 
             {
                 stackNode_t *node = calloc(1, sizeof(stackNode_t));
                 node->bracket = *input;
                 PUSH(stack, node);
                 break;
             }
-
             case ')':
                 top = pop(stack);
                 if (top != '(') {
+                    free_stack(stack);
+                    SLIST_INIT(&head);
                     return false;
                 }
                 break;
+
             case '}':
 
                 top = pop(stack);
                 if (top != '{') {
+                    free_stack(stack);
+                    SLIST_INIT(&head);
                     return false;
                 }
                 break;
@@ -64,16 +72,19 @@ is_paired (const char *input)
             case ']':
                 top = pop(stack);
                 if (top != '[') {
+                    free_stack(stack);
+                    SLIST_INIT(&head);
                     return false;
                 }
                 break;
-        }
-    }
+        } /* switch */
+    } /* for */
 
     if (!EMPTY(stack)) {
         free_stack(stack);
         SLIST_INIT(&head);
         return false;
     }
+
     return true;
 }
