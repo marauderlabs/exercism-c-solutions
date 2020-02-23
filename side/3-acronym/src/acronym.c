@@ -1,11 +1,18 @@
 #include "acronym.h"
 
-uint8_t
-countSpaces (const char* phrase)
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+static uint8_t countSpacesHyphens (const char* phrase);
+
+static uint8_t
+countSpacesHyphens (const char* phrase)
 {
     uint8_t spaces = 0;
     for (const char *p = phrase; *p != '\0'; p++) {
-        if (*p == ' ') {
+        if (' ' == *p || '-' == *p) {
             spaces++;
         }
     }
@@ -22,14 +29,15 @@ abbreviate (const char* phrase)
     char* copy = strdup(phrase);
 
     // assume worstcase and count spaces. No harm in using extra space.
-    // The prototype forces us to not free this space! Uh oh!!
-    char* acro = calloc(countSpaces(phrase)+1, sizeof(char));
-    char* cursor = acro;
+    // 2 extra = 1 for nul char and 1 for 1st letter
 
+    char* acro = calloc(countSpacesHyphens(phrase) + 2, sizeof(char));
+    char* cursor = acro;
     for (char* tok = strtok(copy, " -"); NULL != tok; tok = strtok(NULL, " -")) {
         *cursor = toupper(tok[0]);
         cursor++;
     }
+    *cursor = '\0';
 
     // free the dup
     free(copy); copy = NULL;
